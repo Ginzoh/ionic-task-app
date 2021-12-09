@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="taskmaker"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Task details</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid fixed>
+    <ion-list *ngIf="!showEditTaskForm">
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="12" size-lg="6">
+          <ion-item class="ion-text-center"
+            ><ion-icon name="cube" color="secondary"></ion-icon>
+            {{productDetail.titre}}</ion-item
+          >
+          <ion-item class="ion-text-center"
+            ><ion-icon
+              name="chatbox-ellipses-outline"
+              color="secondary"
+            ></ion-icon>
+            {{productDetail.description}}</ion-item
+          >
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-margin-top">
+        <ion-col size="6">
+          <ion-button color="light" expand="block" (click)="deleteTask()">
+            <ion-icon color="secondary" name="trash"></ion-icon
+            >Delete</ion-button
+          >
+        </ion-col>
+        <ion-col size="6">
+          <ion-button color="light" expand="block" (click)="openEditTaskForm()">
+            <ion-icon color="secondary" name="create"></ion-icon
+            >Edit</ion-button
+          >
+        </ion-col>
+      </ion-row>
+    </ion-list>
+    <form
+      [formGroup]="editTaskForm"
+      autocomplete="off"
+      *ngIf="showEditTaskForm"
+    >
+      <ion-item>
+        <ion-label position="floating">Titre</ion-label>
+        <ion-input type="text" formControlName="titre"></ion-input>
+      </ion-item>
+      <div class="error-message">{{formError.titre}}</div>
+      <ion-item>
+        <ion-label position="floating">Description</ion-label>
+        <ion-input type="text" formControlName="description"></ion-input>
+      </ion-item>
+      <div class="error-message">{{formError.description}}</div>
+      <ion-row class="ion-margin-top">
+        <ion-col size="6">
+          <ion-button color="light" expand="block" (click)="cancelEdit()">
+            <ion-icon color="secondary" name="close-circle"></ion-icon
+            >Cancel</ion-button
+          >
+        </ion-col>
+        <ion-col size="6">
+          <ion-button
+            color="light"
+            expand="block"
+            [disabled]="editTaskForm.invalid"
+            (click)="updateTask()"
+          >
+            <ion-icon color="secondary" name="bookmark"></ion-icon
+            >Save</ion-button
+          >
+        </ion-col>
+      </ion-row>
+    </form>
+  </ion-grid>
+</ion-content>
