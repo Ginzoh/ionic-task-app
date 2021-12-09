@@ -1,13 +1,14 @@
+import { WidgetUtilService } from './../widget-util.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EDITTASK } from '../constants/formValidationMessage';
 import { FirestoreDbService } from '../providers/firestore-db.service';
-import { WidgetUtilService } from '../widget-util.service';
 import { HelperService } from '../providers/helper.service';
 import { Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { formatDate } from '@angular/common';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-task-detail',
@@ -33,7 +34,9 @@ export class TaskDetailPage implements OnInit {
     private helperService: HelperService,
     private activateRoute: ActivatedRoute,
     private widgetUtilService: WidgetUtilService,
-    private db: AngularFirestore
+    private alertController: AlertController,
+    private db: AngularFirestore,
+    private router: Router
   ) {
     this.activateRoute.params.subscribe((result) => {
       console.log('result==', result);
@@ -110,7 +113,32 @@ export class TaskDetailPage implements OnInit {
   cancelEdit() {
     this.showEditTaskForm = false;
   }
-  deleteTask() {}
+  deleteTask() {
+    this.widgetUtilService.presentAlertConfirm(
+      'Delete Task',
+      `Are you sure you want to delete ${this.productDetail.titre}`,
+      [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (bLah) => {},
+        },
+        {
+          text: 'Okay',
+          handler: async () => {
+            try {
+              await this.firestoreDbService.deleteData('tasks', this.productId);
+              this.widgetUtilService.presentToast('Product has been deleted');
+              this.router.navigate(['taskmaker']);
+            } catch (error) {
+              this.widgetUtilService.presentToast(error.message);
+            }
+          },
+        },
+      ]
+    );
+  }
   createFormControl() {
     this.titre = new FormControl('', [Validators.required]);
     this.description = new FormControl('');
